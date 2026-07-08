@@ -79,12 +79,15 @@ def main():
                 if np.isnan(row["score"]):
                     continue
                 score_records[t] = {
-                    "score":            float(row["score"]),
-                    "anomaly_z":        float(row["anomaly_z"]),
-                    "regime_width":     float(row["regime_width"]),
-                    "fit_quality":      float(row["fit_quality"]),
-                    "current_vol":      float(row["current_vol"]),
-                    "gp_expected_vol":  float(row["gp_expected_vol"]),
+                    "score":               float(row["score"]),
+                    "anomaly_z":           float(row["anomaly_z"]),
+                    "regime_width":        float(row["regime_width"]),
+                    "fit_quality":         float(row["fit_quality"]),
+                    "current_vol":         float(row["current_vol"]),
+                    "gp_expected_vol":     float(row["gp_expected_vol"]),
+                    "fitted_lengthscale":  float(row["fitted_lengthscale"]),
+                    "fitted_signal_std":   float(row["fitted_signal_std"]),
+                    "fitted_noise_std":    float(row["fitted_noise_std"]),
                 }
 
             sorted_scores = sorted(score_records.items(), key=lambda x: x[1]["score"], reverse=True)
@@ -112,6 +115,9 @@ def main():
                 "fit_quality": rec["fit_quality"],
                 "current_vol": rec["current_vol"],
                 "gp_expected_vol": rec["gp_expected_vol"],
+                "fitted_lengthscale": rec["fitted_lengthscale"],
+                "fitted_signal_std": rec["fitted_signal_std"],
+                "fitted_noise_std": rec["fitted_noise_std"],
             }
             for t, rec in sorted_etfs[:config.TOP_N]
         ]
@@ -123,6 +129,9 @@ def main():
                 "fit_quality": rec["fit_quality"],
                 "current_vol": rec["current_vol"],
                 "gp_expected_vol": rec["gp_expected_vol"],
+                "fitted_lengthscale": rec["fitted_lengthscale"],
+                "fitted_signal_std": rec["fitted_signal_std"],
+                "fitted_noise_std": rec["fitted_noise_std"],
             }
             for t, rec in sorted_etfs
         }
@@ -141,11 +150,13 @@ def main():
                         "anomaly_z": rec["anomaly_z"],
                         "regime_width": rec["regime_width"],
                         "fit_quality": rec["fit_quality"],
+                        "fitted_lengthscale": rec["fitted_lengthscale"],
                     }
                     for t, rec in sw[:config.TOP_N]
                 ],
                 "full_ranking": [
-                    [t, rec["score"], rec["anomaly_z"], rec["regime_width"], rec["fit_quality"]]
+                    [t, rec["score"], rec["anomaly_z"], rec["regime_width"],
+                     rec["fit_quality"], rec["fitted_lengthscale"]]
                     for t, rec in sw
                 ],
             }
