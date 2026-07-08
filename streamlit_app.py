@@ -203,6 +203,7 @@ numerical precision. A synthetic vol spike was correctly flagged
   <div class="etf-score">best window = {etf.get('best_window','N/A')}d</div>
   <div class="etf-score">anomaly z = {etf.get('anomaly_z', float('nan')):.2f}</div>
   <div class="etf-score">regime width = {etf.get('regime_width', float('nan')):.2f}</div>
+  <div class="etf-score">lengthscale = {etf.get('fitted_lengthscale', float('nan')):.1f}d</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -218,6 +219,7 @@ numerical precision. A synthetic vol spike was correctly flagged
                         "Anomaly Z": info.get("anomaly_z"),
                         "Regime Width": info.get("regime_width"),
                         "Fit Quality": info.get("fit_quality"),
+                        "Fitted Lengthscale (d)": info.get("fitted_lengthscale"),
                         "Current Vol": info.get("current_vol"),
                         "GP Expected Vol": info.get("gp_expected_vol"),
                     })
@@ -296,6 +298,7 @@ with tab2:
   <div class="etf-score">window = {selected_win}d</div>
   <div class="etf-score">anomaly z = {etf.get('anomaly_z', float('nan')):.2f}</div>
   <div class="etf-score">regime width = {etf.get('regime_width', float('nan')):.2f}</div>
+  <div class="etf-score">lengthscale = {etf.get('fitted_lengthscale', float('nan')):.1f}d</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -304,7 +307,8 @@ with tab2:
             if rows:
                 df = pd.DataFrame(
                     rows,
-                    columns=["ETF", "GP Score", "Anomaly Z", "Regime Width", "Fit Quality"],
+                    columns=["ETF", "GP Score", "Anomaly Z", "Regime Width",
+                             "Fit Quality", "Fitted Lengthscale (d)"],
                 )
                 df.insert(0, "Rank", range(1, len(df) + 1))
                 st.dataframe(df, use_container_width=True, hide_index=True)
