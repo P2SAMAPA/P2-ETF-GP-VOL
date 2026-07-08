@@ -254,10 +254,17 @@ def forecast_and_diagnose(prices: pd.DataFrame, ticker: str, window: int):
     std_future = np.sqrt(var_future)
     regime_width = float(np.mean(std_future) / (rv.mean() + 1e-10))
 
+    fitted_lengthscale = float(np.exp(model.log_ell))
+    fitted_signal_std  = float(np.sqrt(np.exp(model.log_sf2)))
+    fitted_noise_std   = float(np.sqrt(np.exp(model.log_sn2)))
+
     return {
         "anomaly_z": anomaly_z_today,
         "regime_width": regime_width,
         "fit_quality": fit_quality,
+        "fitted_lengthscale": fitted_lengthscale,
+        "fitted_signal_std": fitted_signal_std,
+        "fitted_noise_std": fitted_noise_std,
         "current_vol": float(rv[-1]),
         "gp_expected_vol": float(mu_loo[-1]),
     }
@@ -278,7 +285,8 @@ def compute_gp_vol_scores(
     on the composite).
     """
     cols = ["score", "anomaly_z", "regime_width", "fit_quality",
-            "current_vol", "gp_expected_vol"]
+            "current_vol", "gp_expected_vol",
+            "fitted_lengthscale", "fitted_signal_std", "fitted_noise_std"]
     avail = [t for t in tickers if t in prices.columns]
     if not avail:
         return pd.DataFrame(columns=cols)
@@ -296,7 +304,8 @@ def compute_gp_vol_scores(
         fit_quality  = diag["fit_quality"]
 
         print(f"    {ticker}: anomaly_z={anomaly_z:.3f}  "
-              f"regime_width={regime_width:.3f}  fit={fit_quality:.3f}")
+              f"regime_width={regime_width:.3f}  fit={fit_quality:.3f}  "
+              f"lengthscale={diag['fitted_lengthscale']:.1f}d")
 
         favorable = -anomaly_z
         sign = np.sign(favorable) if favorable != 0 else 1.0
