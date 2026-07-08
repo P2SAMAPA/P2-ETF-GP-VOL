@@ -2,7 +2,7 @@ name: Daily GP Vol Forecasting Engine Run
 
 on:
   schedule:
-    - cron: "30 00 * * 1-6"   # 23:30 UTC Mon-Fri
+    - cron: "10 00 * * 1-6"   # 23:30 UTC Mon-Fri
   workflow_dispatch:
 
 jobs:
